@@ -1,10 +1,11 @@
 import minimalmodbus
 import time
 import dbconnect
-import requests
 import psycopg2
 import sys
 from datetime import datetime
+import pymysql
+import requests
 
 def convert_register_value(value1, value2):
     value2 = int(value2, 16)
@@ -28,7 +29,38 @@ sensor_address_con = 0x04
 
 now = time
 
-try:
+# try:
+#     print(1)
+#     # ph sensor connect
+#     instrument_ph = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_ph)
+#     instrument_ph.serial.baudrate = 9600
+#     instrument_ph.serial.parity = minimalmodbus.serial.PARITY_NONE
+#     instrument_ph.serial.bytesize = 8
+#     instrument_ph.serial.stopbits = 1
+#     instrument_ph.serial.timeout = 1
+#
+#     # DO sensor connect
+#     instrument_DO = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_DO)
+#     instrument_DO.serial.baudrate = 9600
+#     instrument_DO.serial.parity = minimalmodbus.serial.PARITY_NONE
+#     instrument_DO.serial.bytesize = 8
+#     instrument_DO.serial.stopbits = 1
+#     instrument_DO.serial.timeout = 1
+#
+#     instrument_con = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_con)
+#     instrument_con.serial.baudrate = 9600
+#     instrument_con.serial.parity = minimalmodbus.serial.PARITY_NONE
+#     instrument_con.serial.bytesize = 8
+#     instrument_con.serial.stopbits = 1
+#     instrument_con.serial.timeout = 1
+#
+#
+#
+# except Exception as e:
+#     print("Could not connect : ", e)
+
+if __name__ == '__main__':
+    print(1)
     # ph sensor connect
     instrument_ph = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_ph)
     instrument_ph.serial.baudrate = 9600
@@ -51,21 +83,14 @@ try:
     instrument_con.serial.bytesize = 8
     instrument_con.serial.stopbits = 1
     instrument_con.serial.timeout = 1
-
-
-
-except Exception as e:
-    print("Could not connect : ", e)
-
-if __name__ == '__main__':
     try:
         flag = 0
 
         while True:
             try :
-                print(1) # 연결 잘 됐나 확인
+                print(1)
                 # ----------------------------------------------------------------------------------------------------------------
-                # read ph senso용
+                # read ph sensor
                 address_value_ph = []
                 read_register1(instrument_ph, address_value_ph)
 
@@ -93,72 +118,71 @@ if __name__ == '__main__':
                 time.sleep(2)
                 # ----------------------------------------------------------------------------------------------------------------
 
-                # ----------------------------------------------------------------------------------------------------------------
-                #send data to db
-
                 now_time = datetime.now()
                 current_time = now_time.strftime('%Y-%m-%d %H:%M:%S')
-
+                
                 print(current_time)
                 print("ph : ", ph, "temp : ", temp)
                 print("DO : ", do_value)
                 print("con : ", con)
 
-                # db = dbconnect.CRUD()
-                # db.save_sensor_data(current_time,temp, ph, do_value,con)
-
-                conn = pymysql.connect(host='localhost', user ='root', password ='soda', db ='water_sensor')
-                cur = conn.cursor()
-                # cur.execute("INSERT INTO water_sensor VALUES (%s, %s, %s, %s, %s)",(current_time, ph, temp, do_value, con))
-
-                conn.commit()
+                # conn = pymysql.connect(host='localhost', user ='root', password ='00000001', db ='water_sensor')
+                # cur = conn.cursor()
+                # # cur.execute("INSERT INTO water_sensor VALUES (%s, %s, %s, %s, %s)",(current_time, ph, temp, do_value, con))
+                #
+                # conn.commit()
 
                 # ----------------------------------------------------------------------------------------------------------------
                 # send data to server
-
-                fishfarm_id = 3
-
-                url_temp = "http://223.130.133.182/api/v1/temperature"
-
-                json_temp = {
-                    "timestamp": current_time,
-                    "id" : fishfarm_id,
-                    "temperature" : temp
-                }
-
-                url_ph = "http://223.130.133.182/api/v1/ph"
-
-                json_ph = {
-                    "timestamp": current_time,
-                    "id": 2,
-                    "pH": ph
-                }
-
-                url_do = "http://223.130.133.182/api/v1/do"
-
-                json_do = {
-                    "timestamp": current_time,
-                    "id": 2,
-                    "DO": do_value
-                }
-
-                url_con = "http://223.130.133.182/api/v1/conductivity"
-
-                json_con = {
-                    "timestamp": current_time,
-                    "id": fishfarm_id,
-                    "conductivity": con
-                }
-
-                response_temp = requests.post(url_temp, json=json_temp)
-                response_ph = requests.post(url_ph, json=json_ph)
-                response_do = requests.post(url_do, json=json_do)
-                response_con = requests.post(url_con, json=json_con)
+                #
+                # fishfarm_id = 3
+                #
+                # url_temp = "http://223.130.133.182/api/v1/temperature"
+                #
+                # json_temp = {
+                #     "timestamp": current_time,
+                #     "id" : fishfarm_id,
+                #     "temperature" : temp
+                # }
+                #
+                # url_ph = "http://223.130.133.182/api/v1/ph"
+                #
+                # json_ph = {
+                #     "timestamp": current_time,
+                #     "id": 2,
+                #     "pH": ph
+                # }
+                #
+                # url_do = "http://223.130.133.182/api/v1/do"
+                #
+                # json_do = {
+                #     "timestamp": current_time,
+                #     "id": 2,
+                #     "DO": do_value
+                # }
+                #
+                # url_con = "http://223.130.133.182/api/v1/conductivity"
+                #
+                # json_con = {
+                #     "timestamp": current_time,
+                #     "id": fishfarm_id,
+                #     "conductivity": con
+                # }
+                #
+                # response_temp = requests.post(url_temp, json=json_temp)
+                # response_ph = requests.post(url_ph, json=json_ph)
+                # response_do = requests.post(url_do, json=json_do)
+                # response_con = requests.post(url_con, json=json_con)
                 # ----------------------------------------------------------------------------------------------------------------
 
 
+
+                # db = dbconnect.CRUD()
+                # db.save_sensor_data(current_time,temp, ph, do_value,con)
+
             except Exception as e:
                 print("ERROR : ", e)
+
 
     except minimalmodbus.NoResponseError:
         print("No request")
