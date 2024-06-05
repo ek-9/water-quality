@@ -29,36 +29,6 @@ sensor_address_con = 0x04
 
 now = time
 
-# try:
-#     print(1)
-#     # ph sensor connect
-#     instrument_ph = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_ph)
-#     instrument_ph.serial.baudrate = 9600
-#     instrument_ph.serial.parity = minimalmodbus.serial.PARITY_NONE
-#     instrument_ph.serial.bytesize = 8
-#     instrument_ph.serial.stopbits = 1
-#     instrument_ph.serial.timeout = 1
-#
-#     # DO sensor connect
-#     instrument_DO = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_DO)
-#     instrument_DO.serial.baudrate = 9600
-#     instrument_DO.serial.parity = minimalmodbus.serial.PARITY_NONE
-#     instrument_DO.serial.bytesize = 8
-#     instrument_DO.serial.stopbits = 1
-#     instrument_DO.serial.timeout = 1
-#
-#     instrument_con = minimalmodbus.Instrument(port=sensor_port, slaveaddress=sensor_address_con)
-#     instrument_con.serial.baudrate = 9600
-#     instrument_con.serial.parity = minimalmodbus.serial.PARITY_NONE
-#     instrument_con.serial.bytesize = 8
-#     instrument_con.serial.stopbits = 1
-#     instrument_con.serial.timeout = 1
-#
-#
-#
-# except Exception as e:
-#     print("Could not connect : ", e)
-
 if __name__ == '__main__':
     print(1)
     # ph sensor connect
@@ -83,6 +53,9 @@ if __name__ == '__main__':
     instrument_con.serial.bytesize = 8
     instrument_con.serial.stopbits = 1
     instrument_con.serial.timeout = 1
+    conn = pymysql.connect(host='103.252.1.144', user ='sensor', password ='sensor', db ='sensor')
+    # conn = pymysql.connect(host='localhost', user ='root', password ='0000', db ='water_sensor')
+    print("connect")
     try:
         flag = 0
 
@@ -126,53 +99,53 @@ if __name__ == '__main__':
                 print("DO : ", do_value)
                 print("con : ", con)
 
-                # conn = pymysql.connect(host='localhost', user ='root', password ='00000001', db ='water_sensor')
-                # cur = conn.cursor()
-                # # cur.execute("INSERT INTO water_sensor VALUES (%s, %s, %s, %s, %s)",(current_time, ph, temp, do_value, con))
-                #
-                # conn.commit()
+                
+                cur = conn.cursor()
+                cur.execute("INSERT INTO sensor VALUES (%s, %s, %s, %s, %s)",(current_time, ph, temp, do_value, con))
+
+                conn.commit()
 
                 # ----------------------------------------------------------------------------------------------------------------
                 # send data to server
                 #
-                # fishfarm_id = 3
-                #
-                # url_temp = "http://223.130.133.182/api/v1/temperature"
-                #
-                # json_temp = {
-                #     "timestamp": current_time,
-                #     "id" : fishfarm_id,
-                #     "temperature" : temp
-                # }
-                #
-                # url_ph = "http://223.130.133.182/api/v1/ph"
-                #
-                # json_ph = {
-                #     "timestamp": current_time,
-                #     "id": 2,
-                #     "pH": ph
-                # }
-                #
-                # url_do = "http://223.130.133.182/api/v1/do"
-                #
-                # json_do = {
-                #     "timestamp": current_time,
-                #     "id": 2,
-                #     "DO": do_value
-                # }
-                #
-                # url_con = "http://223.130.133.182/api/v1/conductivity"
-                #
-                # json_con = {
-                #     "timestamp": current_time,
-                #     "id": fishfarm_id,
-                #     "conductivity": con
-                # }
-                #
-                # response_temp = requests.post(url_temp, json=json_temp)
-                # response_ph = requests.post(url_ph, json=json_ph)
-                # response_do = requests.post(url_do, json=json_do)
-                # response_con = requests.post(url_con, json=json_con)
+                fishfarm_id = 3
+                
+                url_temp = "http://223.130.133.182/api/v1/temperature"
+                
+                json_temp = {
+                    "timestamp": current_time,
+                    "id" : fishfarm_id,
+                    "temperature" : temp
+                }
+                
+                url_ph = "http://223.130.133.182/api/v1/ph"
+                
+                json_ph = {
+                    "timestamp": current_time,
+                    "id": 2,
+                    "pH": ph
+                }
+                
+                url_do = "http://223.130.133.182/api/v1/do"
+                
+                json_do = {
+                    "timestamp": current_time,
+                    "id": 2,
+                    "DO": do_value
+                }
+                
+                url_con = "http://223.130.133.182/api/v1/conductivity"
+                
+                json_con = {
+                    "timestamp": current_time,
+                    "id": fishfarm_id,
+                    "conductivity": con
+                }
+                
+                response_temp = requests.post(url_temp, json=json_temp)
+                response_ph = requests.post(url_ph, json=json_ph)
+                response_do = requests.post(url_do, json=json_do)
+                response_con = requests.post(url_con, json=json_con)
                 # ----------------------------------------------------------------------------------------------------------------
 
 
