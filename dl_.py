@@ -159,7 +159,7 @@ def prediction(input_data) :
     last_predicted_quality = predicted_quality[-1]
 
     # 결과 출력
-    # print("DO after 3hour:", last_predicted_quality)
+    print("DO after 3hour:", last_predicted_quality)
 
     return last_predicted_quality
 
