@@ -119,7 +119,10 @@ def control(current_do, current_temp) :
         i += 1
 
     print("pump ON count : ",pump_states.count(1))
-    print("1 step pump : ",pump_states[0])
+    if pump_states[0] == 1 :
+        print('1 step : on')
+    else :
+        print('1 step : off')
 
     # 결과를 보간하여 펌프 상태를 일정 시간 유지
     DO_times = np.arange(0, len(DO_values) * time_step, time_step)
